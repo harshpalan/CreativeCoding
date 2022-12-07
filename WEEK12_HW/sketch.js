@@ -30,9 +30,18 @@ function setup() {
 function draw() {
   samp = lerp(samp, soundValue, 0.2);
   // update and draw each particle
+  // col = random(0, 2);
+
   let bright = map(soundValue, 0, 200, 50, 90);
+  // if (col > 1) {
+  //     fill(189,60, bright);
+  //   }
+  //   else{
+  //     fill(228,90,bright);
+  //   }
   for (let i = 0; i < particles.length; i++) {
     fill(col, 90, bright);
+
     let cp = particles[i];
     cp.drawParticle(samp);
   }
