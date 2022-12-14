@@ -28,7 +28,7 @@ function setup() {
 }
 
 function draw() {
-  samp = lerp(samp, soundValue, 0.2);
+  samp = lerp(samp, soundValue/6, 0.2);
   // update and draw each particle
   // col = random(0, 2);
 
