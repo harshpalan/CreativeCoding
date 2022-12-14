@@ -1,5 +1,13 @@
 // REFERENCE : https://editor.p5js.org/ml5/sketches/PoseNet_webcam
 
+//BODYJAM -> This p5.js sketch reads body poses and translates that into music (might be crappy but it's fun). 
+// It also reads from arduino serial to set different oscillator types. 
+// The arduino circuit has 2 buttons and one ultrasonic sensor. 
+// When button 1 is pressed it's set it to SINE oscillator, button 2 sets it to SAWTOOTH and when both are pressed it is set to SQUARE. 
+// The values from ultrasonic sensor are used to change colors as per the distance. 
+
+//This sketch works without the arduino serial also 
+
 let video;
 let poseNet;
 let poses = [];
@@ -45,15 +53,17 @@ function setup() {
   osc.start();
   osc.amp(0);
   reverb = new p5.Reverb();
-  reverb.process(osc, 5, 0.5);
+  reverb.process(osc, 3, 1.2);
   reverb.amp(0.7);
   
+  //randomize notes
   notes1.sort(() => random() - 0.5);
   notes2.sort(() => random() - 0.5);
   notes3.sort(() => random() - 0.5);
 }
 
 function getData() {
+  //gets the serial data and sets the oscillator type. 
   data = trim(serial.readLine());
   if (!data) return;
   serialData = data.split(",");
@@ -62,7 +72,7 @@ function getData() {
   if (serialData[1] == "sine") {
     notes = notes3;
     osc.setType("sine");
-    reverb.drywet(0.7);
+    reverb.drywet(0.8);
     text();
   }
   if (serialData[1] == "sawtooth") {
@@ -93,7 +103,8 @@ function draw() {
     10,
     30
   );
-  if (keyIsPressed && key == "h" || key == "H") {
+  //to show the background image
+  if (keyIsPressed && key == "h") {
     image(video, 0, 0, width, height);
   }
   drawGrid();
@@ -118,6 +129,7 @@ function drawGrid() {
 }
 
 function drawKeypoints() {
+  //draw out the joints and the face detected in the pose and map changes in the pose to audio. 
   if (poses.length == 0) {
     return;
   }
@@ -158,6 +170,7 @@ function drawKeypoints() {
 }
 
 function drawSkeleton() {
+  //draw the skeleton lines
   for (let i = 0; i < poses.length; i++) {
     for (let j = 0; j < poses[i].skeleton.length; j++) {
       let partA = poses[i].skeleton[j][0];
@@ -174,8 +187,9 @@ function drawSkeleton() {
   }
 }
 
-function playNote(n, duration) {
-  getAudioContext().resume();
+function playNote(n, duration) { //get the notes and plays it
+  getAudioContext().resume(); //to allow playing in background 
+  
   var note = notes[n];
   var r = random();
   if (r < 0.25) {
@@ -197,4 +211,3 @@ function playNote(n, duration) {
 function gotPoses(results) {
   poses = results;
 }
-
