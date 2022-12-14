@@ -71,7 +71,7 @@ function getData() {
     reverb.drywet(0.5);
   }
   if (serialData[1] == "square") {
-    notes = notes31;
+    notes = notes3;
     osc.setType("square");
     reverb.drywet(0.6);
   }
